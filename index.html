@@ -1,1 +1,581 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Real Unblocker</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1e2337 0%, #2a2f4a 50%, #1e2337 100%);
+            color: white;
+            min-height: 100vh;
+        }
+
+        /* Header Styles */
+        .header {
+            background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+            padding: 15px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 4px 20px rgba(59, 130, 246, 0.3);
+        }
+
+        .logo {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .logo h1 {
+            font-size: 28px;
+            font-weight: bold;
+            margin: 0;
+        }
+
+        .logo .subtitle {
+            font-size: 12px;
+            opacity: 0.8;
+            margin-top: -2px;
+        }
+
+        .search-container {
+            flex: 1;
+            max-width: 400px;
+            margin: 0 20px;
+        }
+
+        .search-box {
+            width: 100%;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 25px;
+            background: rgba(0, 0, 0, 0.3);
+            color: white;
+            font-size: 16px;
+            outline: none;
+            backdrop-filter: blur(10px);
+        }
+
+        .search-box::placeholder {
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .header-controls {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .dropdown {
+            position: relative;
+        }
+
+        .dropdown select {
+            background: rgba(0, 0, 0, 0.3);
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 20px;
+            cursor: pointer;
+            outline: none;
+        }
+
+        .settings-btn {
+            background: rgba(0, 0, 0, 0.3);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background 0.3s ease;
+        }
+
+        .settings-btn:hover {
+            background: rgba(0, 0, 0, 0.5);
+        }
+
+        /* Main Content */
+        .main-content {
+            padding: 40px 20px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .section {
+            margin-bottom: 40px;
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .section-header::before {
+            content: '▼';
+            margin-right: 10px;
+            transition: transform 0.3s ease;
+        }
+
+        .section-header.collapsed::before {
+            transform: rotate(-90deg);
+        }
+
+        .section-title {
+            font-size: 20px;
+            font-weight: 600;
+        }
+
+        .games-count {
+            background: rgba(59, 130, 246, 0.3);
+            color: #3b82f6;
+            padding: 4px 12px;
+            border-radius: 15px;
+            font-size: 14px;
+            margin-left: 10px;
+        }
+
+        /* Games Grid */
+        .games-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 20px;
+            transition: max-height 0.3s ease, opacity 0.3s ease;
+            overflow: hidden;
+        }
+
+        .games-grid.collapsed {
+            max-height: 0;
+            opacity: 0;
+            margin: 0;
+        }
+
+        .game-card {
+            background: linear-gradient(145deg, #2a2f4a 0%, #1e2337 100%);
+            border-radius: 15px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            position: relative;
+        }
+
+        .game-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 30px rgba(59, 130, 246, 0.4);
+            border: 2px solid #3b82f6;
+        }
+
+        .game-card:hover::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.2), rgba(29, 78, 216, 0.2));
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .game-image {
+            width: 100%;
+            height: 150px;
+            background: linear-gradient(135deg, #4f46e5, #7c3aed, #ec4899);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            position: relative;
+        }
+
+        .game-info {
+            padding: 15px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .game-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 5px;
+            text-align: center;
+        }
+
+        .game-description {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.7);
+            text-align: center;
+        }
+
+        /* Game Page Styles */
+        .game-page {
+            display: none;
+            height: 100vh;
+            flex-direction: column;
+        }
+
+        .game-page.active {
+            display: flex;
+        }
+
+        .game-header {
+            background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+            padding: 15px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 4px 20px rgba(59, 130, 246, 0.3);
+        }
+
+        .game-controls {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .control-btn {
+            background: rgba(0, 0, 0, 0.3);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background 0.3s ease;
+        }
+
+        .control-btn:hover {
+            background: rgba(0, 0, 0, 0.5);
+        }
+
+        .game-container {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #000;
+        }
+
+        .game-frame {
+            width: 100%;
+            height: 100%;
+            border: none;
+            background: white;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .header {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .search-container {
+                max-width: none;
+                margin: 0;
+                width: 100%;
+            }
+
+            .games-grid {
+                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+                gap: 15px;
+            }
+
+            .game-image {
+                height: 120px;
+                font-size: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Home Page -->
+    <div id="home-page">
+        <header class="header">
+            <div class="logo">
+                <h1>Real Unblocker</h1>
+                <div class="subtitle">Games By GnMath</div>
+            </div>
+            <div class="search-container">
+                <input type="text" class="search-box" placeholder="Search games..." id="searchBox">
+            </div>
+            <div class="header-controls">
+                <div class="dropdown">
+                    <select>
+                        <option>Name</option>
+                        <option>Date Added</option>
+                        <option>Popularity</option>
+                    </select>
+                </div>
+                <button class="settings-btn">Settings</button>
+            </div>
+        </header>
+
+        <main class="main-content">
+            <section class="section">
+                <div class="section-header" onclick="toggleSection(this)">
+                    <span class="section-title">Featured Games</span>
+                    <span class="games-count">(10)</span>
+                </div>
+                <div class="games-grid" id="featured-games">
+                    <div class="game-card" onclick="openGame('discord-activities')">
+                        <div class="game-image">🎮</div>
+                        <div class="game-info">
+                            <div class="game-title">Discord Activities</div>
+                            <div class="game-description">Fun social games</div>
+                        </div>
+                    </div>
+                    <div class="game-card" onclick="openGame('fnaf')">
+                        <div class="game-image">🐻</div>
+                        <div class="game-info">
+                            <div class="game-title">Five Nights at Freddy's</div>
+                            <div class="game-description">Horror survival</div>
+                        </div>
+                    </div>
+                    <div class="game-card" onclick="openGame('among-us')">
+                        <div class="game-image">👾</div>
+                        <div class="game-info">
+                            <div class="game-title">Among Us</div>
+                            <div class="game-description">Social deduction</div>
+                        </div>
+                    </div>
+                    <div class="game-card" onclick="openGame('horror-game')">
+                        <div class="game-image">👻</div>
+                        <div class="game-info">
+                            <div class="game-title">Bendy and the Ink Machine</div>
+                            <div class="game-description">Horror adventure</div>
+                        </div>
+                    </div>
+                    <div class="game-card" onclick="openGame('bowmasters')">
+                        <div class="game-image">🏹</div>
+                        <div class="game-info">
+                            <div class="game-title">Bowmasters</div>
+                            <div class="game-description">Archery battle</div>
+                        </div>
+                    </div>
+                    <div class="game-card" onclick="openGame('roulette')">
+                        <div class="game-image">🎰</div>
+                        <div class="game-info">
+                            <div class="game-title">Buckshot Roulette</div>
+                            <div class="game-description">Intense strategy</div>
+                        </div>
+                    </div>
+                    <div class="game-card" onclick="openGame('puzzle-game')">
+                        <div class="game-image">🧩</div>
+                        <div class="game-info">
+                            <div class="game-title">Mind Puzzle</div>
+                            <div class="game-description">Brain teaser</div>
+                        </div>
+                    </div>
+                    <div class="game-card" onclick="openGame('class-game')">
+                        <div class="game-image">🎓</div>
+                        <div class="game-info">
+                            <div class="game-title">Class of '09</div>
+                            <div class="game-description">Visual novel</div>
+                        </div>
+                    </div>
+                    <div class="game-card" onclick="openGame('racing-game')">
+                        <div class="game-image">🏎️</div>
+                        <div class="game-info">
+                            <div class="game-title">Speed Racer</div>
+                            <div class="game-description">High-speed racing</div>
+                        </div>
+                    </div>
+                    <div class="game-card" onclick="openGame('rpg-game')">
+                        <div class="game-image">⚔️</div>
+                        <div class="game-info">
+                            <div class="game-title">ChAzxGate</div>
+                            <div class="game-description">Adventure RPG</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="section">
+                <div class="section-header" onclick="toggleSection(this)">
+                    <span class="section-title">Action Games</span>
+                    <span class="games-count">(8)</span>
+                </div>
+                <div class="games-grid">
+                    <div class="game-card" onclick="openGame('shooter-game')">
+                        <div class="game-image">🔫</div>
+                        <div class="game-info">
+                            <div class="game-title">Battle Arena</div>
+                            <div class="game-description">Fast-paced shooter</div>
+                        </div>
+                    </div>
+                    <div class="game-card" onclick="openGame('platformer')">
+                        <div class="game-image">🎯</div>
+                        <div class="game-info">
+                            <div class="game-title">Platform Master</div>
+                            <div class="game-description">Jump and run</div>
+                        </div>
+                    </div>
+                    <div class="game-card" onclick="openGame('fighting-game')">
+                        <div class="game-image">👊</div>
+                        <div class="game-info">
+                            <div class="game-title">Fighter Arena</div>
+                            <div class="game-description">Combat sports</div>
+                        </div>
+                    </div>
+                    <div class="game-card" onclick="openGame('adventure-game')">
+                        <div class="game-image">🗺️</div>
+                        <div class="game-info">
+                            <div class="game-title">Quest Master</div>
+                            <div class="game-description">Epic adventure</div>
+                        </div>
+                    </div>
+                    <div class="game-card" onclick="openGame('stealth-game')">
+                        <div class="game-image">🥷</div>
+                        <div class="game-info">
+                            <div class="game-title">Shadow Agent</div>
+                            <div class="game-description">Stealth mission</div>
+                        </div>
+                    </div>
+                    <div class="game-card" onclick="openGame('survival-game')">
+                        <div class="game-image">🏕️</div>
+                        <div class="game-info">
+                            <div class="game-title">Survival Island</div>
+                            <div class="game-description">Resource management</div>
+                        </div>
+                    </div>
+                    <div class="game-card" onclick="openGame('zombie-game')">
+                        <div class="game-image">🧟</div>
+                        <div class="game-info">
+                            <div class="game-title">Zombie Defense</div>
+                            <div class="game-description">Tower defense</div>
+                        </div>
+                    </div>
+                    <div class="game-card" onclick="openGame('war-game')">
+                        <div class="game-image">💥</div>
+                        <div class="game-info">
+                            <div class="game-title">War Zone</div>
+                            <div class="game-description">Strategic warfare</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Game Page -->
+    <div id="game-page" class="game-page">
+        <header class="game-header">
+            <div class="logo">
+                <h1>Real Unblocker</h1>
+            </div>
+            <div class="game-controls">
+                <button class="control-btn" onclick="goHome()">🏠 Home</button>
+                <button class="control-btn" onclick="toggleFullscreen()">⛶ Fullscreen</button>
+            </div>
+        </header>
+        <div class="game-container">
+            <iframe id="game-frame" class="game-frame" src=""></iframe>
+        </div>
+    </div>
+
+    <script>
+        let currentGame = '';
+
+        // Search functionality
+        document.getElementById('searchBox').addEventListener('input', function(e) {
+            const searchTerm = e.target.value.toLowerCase();
+            const gameCards = document.querySelectorAll('.game-card');
+            
+            gameCards.forEach(card => {
+                const title = card.querySelector('.game-title').textContent.toLowerCase();
+                const description = card.querySelector('.game-description').textContent.toLowerCase();
+                
+                if (title.includes(searchTerm) || description.includes(searchTerm)) {
+                    card.style.display = 'block';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        });
+
+        // Toggle section collapse/expand
+        function toggleSection(header) {
+            const gamesGrid = header.nextElementSibling;
+            header.classList.toggle('collapsed');
+            gamesGrid.classList.toggle('collapsed');
+        }
+
+        // Open game function
+        function openGame(gameId) {
+            currentGame = gameId;
+            document.getElementById('home-page').style.display = 'none';
+            document.getElementById('game-page').classList.add('active');
+            
+            // Map game IDs to actual HTML file paths
+            const gameFiles = {
+                'discord-activities': 'games/discord-activities.html',
+                'fnaf': 'games/fnaf.html',
+                'among-us': 'games/among-us.html',
+                'horror-game': 'games/horror-game.html',
+                'bowmasters': 'games/bowmasters.html',
+                'roulette': 'games/roulette.html',
+                'puzzle-game': 'games/puzzle-game.html',
+                'class-game': 'games/class-game.html',
+                'racing-game': 'games/racing-game.html',
+                'rpg-game': 'games/rpg-game.html',
+                'shooter-game': 'games/shooter-game.html',
+                'platformer': 'games/platformer.html',
+                'fighting-game': 'games/fighting-game.html',
+                'adventure-game': 'games/adventure-game.html',
+                'stealth-game': 'games/stealth-game.html',
+                'survival-game': 'games/survival-game.html',
+                'zombie-game': 'games/zombie-game.html',
+                'war-game': 'games/war-game.html'
+            };
+            
+            const gameFile = gameFiles[gameId] || 'games/placeholder.html';
+            document.getElementById('game-frame').src = gameFile;
+        }
+
+        // Go back to home
+        function goHome() {
+            document.getElementById('home-page').style.display = 'block';
+            document.getElementById('game-page').classList.remove('active');
+            document.getElementById('game-frame').src = '';
+            currentGame = '';
+        }
+
+        // Toggle fullscreen
+        function toggleFullscreen() {
+            const gameFrame = document.getElementById('game-frame');
+            
+            if (!document.fullscreenElement) {
+                gameFrame.requestFullscreen().catch(err => {
+                    console.log(`Error attempting to enable fullscreen: ${err.message}`);
+                });
+            } else {
+                document.exitFullscreen();
+            }
+        }
+
+        // Handle escape key to exit fullscreen
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape' && document.fullscreenElement) {
+                document.exitFullscreen();
+            }
+        });
+
+        // Prevent right-click context menu on game cards
+        document.querySelectorAll('.game-card').forEach(card => {
+            card.addEventListener('contextmenu', e => e.preventDefault());
+        });
+    </script>
+</body>
+</html>
