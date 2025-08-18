@@ -17,11 +17,146 @@
             color: white;
             min-height: 100vh;
             transition: all 0.3s ease;
+            overflow-x: hidden;
         }
 
         body.light-mode {
             background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 50%, #f1f5f9 100%);
             color: #1e293b;
+        }
+
+        /* Intro Animation Styles */
+        .intro-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            background: radial-gradient(ellipse at center, #1a1f3a 0%, #0a0e1a 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10000;
+            transition: opacity 1s ease-out, visibility 1s ease-out;
+        }
+
+        .intro-overlay.fade-out {
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        .intro-content {
+            text-align: center;
+            position: relative;
+            z-index: 10001;
+        }
+
+        .welcome-text {
+            font-size: 4rem;
+            font-weight: bold;
+            background: linear-gradient(45deg, #3b82f6, #8b5cf6, #ec4899, #f59e0b);
+            background-size: 400% 400%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: gradientShift 3s ease-in-out infinite, textGlow 2s ease-in-out infinite alternate;
+            opacity: 0;
+            transform: translateY(50px) scale(0.8);
+            animation-delay: 1s;
+            animation-fill-mode: forwards;
+        }
+
+        .welcome-text.animate {
+            animation: textAppear 1.5s ease-out forwards, gradientShift 3s ease-in-out infinite, textGlow 2s ease-in-out infinite alternate;
+        }
+
+        @keyframes textAppear {
+            0% {
+                opacity: 0;
+                transform: translateY(50px) scale(0.8);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        @keyframes textGlow {
+            0% { filter: drop-shadow(0 0 10px rgba(59, 130, 246, 0.5)); }
+            100% { filter: drop-shadow(0 0 30px rgba(59, 130, 246, 0.8)) drop-shadow(0 0 40px rgba(139, 92, 246, 0.6)); }
+        }
+
+        /* Stars Animation */
+        .stars-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+
+        .star {
+            position: absolute;
+            background: white;
+            border-radius: 50%;
+            animation: starAppear 0.8s ease-out forwards, starTwinkle 2s ease-in-out infinite alternate;
+            opacity: 0;
+        }
+
+        .star.small {
+            width: 2px;
+            height: 2px;
+        }
+
+        .star.medium {
+            width: 3px;
+            height: 3px;
+        }
+
+        .star.large {
+            width: 4px;
+            height: 4px;
+        }
+
+        @keyframes starAppear {
+            0% {
+                opacity: 0;
+                transform: scale(0);
+            }
+            50% {
+                opacity: 1;
+                transform: scale(1.2);
+            }
+            100% {
+                opacity: 0.9;
+                transform: scale(1);
+            }
+        }
+
+        @keyframes starTwinkle {
+            0% { 
+                opacity: 0.3;
+            }
+            100% { 
+                opacity: 1;
+            }
+        }
+
+        /* Main website styles (keeping all your original styles) */
+        .main-website {
+            opacity: 0;
+            transition: opacity 1s ease-in;
+        }
+
+        .main-website.show {
+            opacity: 1;
         }
 
         /* Header Styles */
@@ -324,6 +459,10 @@
 
         /* Responsive Design */
         @media (max-width: 768px) {
+            .welcome-text {
+                font-size: 2.5rem;
+            }
+
             .header {
                 flex-direction: column;
                 gap: 15px;
@@ -345,332 +484,411 @@
                 font-size: 20px;
             }
         }
+
+        @media (max-width: 480px) {
+            .welcome-text {
+                font-size: 2rem;
+            }
+        }
     </style>
 </head>
 <body>
-    <!-- Home Page -->
-    <div id="home-page">
-        <header class="header">
-            <div class="logo">
-                <h1>Real Unblocker</h1>
-                <div class="subtitle">Games By GnMath</div>
-            </div>
-            <div class="search-container">
-                <input type="text" class="search-box" placeholder="Search games..." id="searchBox">
-            </div>
-            <div class="header-controls">
-                <div class="dropdown">
-                    <select>
-                        <option>Name</option>
-                        <option>Date Added</option>
-                        <option>Popularity</option>
-                    </select>
-                </div>
-                <button class="settings-btn" onclick="toggleTheme()">🌙 Settings</button>
-            </div>
-        </header>
-
-        <main class="main-content">
-            <section class="section">
-                <div class="section-header" onclick="toggleSection(this)">
-                    <span class="section-title">All Games</span>
-                    <span class="games-count">(24)</span>
-                </div>
-                <div class="games-grid" id="all-games">
-                    <!-- Original Games -->
-                    <div class="game-card" onclick="openGame('buckshot-roulette')">
-                        <div class="game-image">
-                            <img src="https://tse3.mm.bing.net/th/id/OIP.qUIzitN3yMQKsgG9vOk9wwHaHa?pid=Api&P=0&h=180" 
-                                 alt="Buckshot Roulette" 
-                                 onerror="this.parentElement.classList.add('no-image'); this.style.display='none';">
-                            <div class="fallback-icon">🎰</div>
-                        </div>
-                        <div class="game-info">
-                            <div class="game-title">Buckshot Roulette</div>
-                            <div class="game-description">Intense strategy game</div>
-                        </div>
-                    </div>
-                    <div class="game-card" onclick="openGame('chatbot-ai')">
-                        <div class="game-image">
-                            <img src="https://tse4.mm.bing.net/th/id/OIP.QfuBrrVrqpd--YpvS2QwwgAAAA?pid=Api&P=0&h=180" 
-                                 alt="Chat Bot AI" 
-                                 onerror="this.parentElement.classList.add('no-image'); this.style.display='none';">
-                            <div class="fallback-icon">🤖</div>
-                        </div>
-                        <div class="game-info">
-                            <div class="game-title">Chat Bot (A._.I)</div>
-                            <div class="game-description">AI conversation</div>
-                        </div>
-                    </div>
-                    <div class="game-card" onclick="openGame('repo')">
-                        <div class="game-image">
-                            <img src="https://assets-prd.ignimgs.com/2025/02/27/repo-button-1740672104138.jpg?crop=1%3A1" 
-                                 alt="R.E.P.O" 
-                                 onerror="this.parentElement.classList.add('no-image'); this.style.display='none';">
-                            <div class="fallback-icon">📁</div>
-                        </div>
-                        <div class="game-info">
-                            <div class="game-title">R.E.P.O</div>
-                            <div class="game-description">Mystery adventure</div>
-                        </div>
-                    </div>
-                    <div class="game-card" onclick="openGame('endoparasitic')">
-                        <div class="game-image">
-                            <img src="https://mediaproxy.tvtropes.org/width/1200/https://static.tvtropes.org/pmwiki/pub/images/endoparasitic_vertical.png" 
-                                 alt="Endoparasitic" 
-                                 onerror="this.parentElement.classList.add('no-image'); this.style.display='none';">
-                            <div class="fallback-icon">🦠</div>
-                        </div>
-                        <div class="game-info">
-                            <div class="game-title">Endoparasitic</div>
-                            <div class="game-description">Horror survival</div>
-                        </div>
-                    </div>
-                    <div class="game-card" onclick="openGame('thats-not-my-neighbor')">
-                        <div class="game-image">
-                            <img src="https://snowrider3d.io/wp-content/uploads/2024/03/Thats-Not-My-Neighbor.jpg" 
-                                 alt="That's Not My Neighbor" 
-                                 onerror="this.parentElement.classList.add('no-image'); this.style.display='none';">
-                            <div class="fallback-icon">👁️</div>
-                        </div>
-                        <div class="game-info">
-                            <div class="game-title">That's Not My Neighbor</div>
-                            <div class="game-description">Detective thriller</div>
-                        </div>
-                    </div>
-                    <div class="game-card" onclick="openGame('blade-ball')">
-                        <div class="game-image">
-                            <img src="https://www.gameskinny.com/wp-content/uploads/2023/10/Blade-Ball.jpg?w=1200" 
-                                 alt="Blade Ball" 
-                                 onerror="this.parentElement.classList.add('no-image'); this.style.display='none';">
-                            <div class="fallback-icon">⚽</div>
-                        </div>
-                        <div class="game-info">
-                            <div class="game-title">Blade Ball</div>
-                            <div class="game-description">Action sports</div>
-                        </div>
-                    </div>
-                    <div class="game-card" onclick="openGame('soundboard')">
-                        <div class="game-image">
-                            <img src="https://fs-prod-cdn.nintendo-europe.com/media/images/10_share_images/games_15/nintendo_switch_download_software_1/2x1_NSwitchDS_SoundboardButtonsWithInstantSounds_image1600w.jpg" 
-                                 alt="Soundboard" 
-                                 onerror="this.parentElement.classList.add('no-image'); this.style.display='none';">
-                            <div class="fallback-icon">🔊</div>
-                        </div>
-                        <div class="game-info">
-                            <div class="game-title">Soundboard</div>
-                            <div class="game-description">Sound effects fun</div>
-                        </div>
-                    </div>
-
-                    <!-- New Games Added -->
-                    <div class="game-card" onclick="openGame('raft')">
-                        <div class="game-image">
-                            <img src="https://cdn.akamai.steamstatic.com/steam/apps/648800/header.jpg" 
-                                 alt="Raft" 
-                                 onerror="this.parentElement.classList.add('no-image'); this.style.display='none';">
-                            <div class="fallback-icon">🛟</div>
-                        </div>
-                        <div class="game-info">
-                            <div class="game-title">Raft</div>
-                            <div class="game-description">Ocean survival adventure</div>
-                        </div>
-                    </div>
-                    <div class="game-card" onclick="openGame('vex5')">
-                        <div class="game-image">
-                            <img src="https://cdn.now.gg/apps-content/com.nowgg.h5.pub483.app51034/icon/vex-5.png" 
-                                 alt="Vex 5" 
-                                 onerror="this.parentElement.classList.add('no-image'); this.style.display='none';">
-                            <div class="fallback-icon">🏃</div>
-                        </div>
-                        <div class="game-info">
-                            <div class="game-title">Vex 3</div>
-                            <div class="game-description">Platform challenge</div>
-                        </div>
-                    </div>
-                    <div class="game-card" onclick="openGame('bitlife')">
-                        <div class="game-image">
-                            <img src="https://gamerjournalist.com/wp-content/uploads/2022/05/bitlife_logo.jpg?w=1200" 
-                                 alt="BitLife" 
-                                 onerror="this.parentElement.classList.add('no-image'); this.style.display='none';">
-                            <div class="fallback-icon">👤</div>
-                        </div>
-                        <div class="game-info">
-                            <div class="game-title">BitLife</div>
-                            <div class="game-description">Life simulation</div>
-                        </div>
-                    </div>
-                    <div class="game-card" onclick="openGame('bad-parenting')">
-                        <div class="game-image">
-                            <img src="https://img.itch.zone/aW1nLzE4MjEwNDQ5LnBuZw==/original/JNYuz2.png" 
-                                 alt="Bad Parenting" 
-                                 onerror="this.parentElement.classList.add('no-image'); this.style.display='none';">
-                            <div class="fallback-icon">👨‍👩‍👧‍👦</div>
-                        </div>
-                        <div class="game-info">
-                            <div class="game-title">Bad Parenting</div>
-                            <div class="game-description">Family simulation</div>
-                        </div>
-                    </div>
-                    <div class="game-card" onclick="openGame('elastic-man')">
-                        <div class="game-image">
-                            <img src="https://4.bp.blogspot.com/-QN_YD0A5_e0/WlBXadDDrwI/AAAAAAAEvXI/231sQj2vyUEOZOjFzKZt2xAdUjommLPSgCLcBGAs/s1600/elasticman.jpg" 
-                                 alt="Elastic Man" 
-                                 onerror="this.parentElement.classList.add('no-image'); this.style.display='none';">
-                            <div class="fallback-icon">🤸</div>
-                        </div>
-                        <div class="game-info">
-                            <div class="game-title">Elastic Man</div>
-                            <div class="game-description">Stretchy physics fun</div>
-                        </div>
-                    </div>
-                    <div class="game-card" onclick="openGame('five-nights-freddys')">
-                        <div class="game-image">
-                            <img src="https://cdn.akamai.steamstatic.com/steam/apps/319510/header.jpg" 
-                                 alt="Five Nights at Freddy's" 
-                                 onerror="this.parentElement.classList.add('no-image'); this.style.display='none';">
-                            <div class="fallback-icon">🐻</div>
-                        </div>
-                        <div class="game-info">
-                            <div class="game-title">Five Nights at Freddy's</div>
-                            <div class="game-description">Horror survival</div>
-                        </div>
-                    </div>
-                    <div class="game-card" onclick="openGame('friday-night-funkin')">
-                        <div class="game-image">
-                            <img src="https://tse4.mm.bing.net/th/id/OIP.d0qnyASIdGHNotpVt6LPEgHaHa?pid=Api&P=0&h=180" 
-                                 alt="Friday Night Funkin" 
-                                 onerror="this.parentElement.classList.add('no-image'); this.style.display='none';">
-                            <div class="fallback-icon">🎵</div>
-                        </div>
-                        <div class="game-info">
-                            <div class="game-title">Friday Night Funkin</div>
-                            <div class="game-description">Rhythm music game</div>
-                        </div>
-                    </div>
-                    <div class="game-card" onclick="openGame('people-playground')">
-                        <div class="game-image">
-                            <img src="https://cdn.akamai.steamstatic.com/steam/apps/1118200/header.jpg" 
-                                 alt="People Playground" 
-                                 onerror="this.parentElement.classList.add('no-image'); this.style.display='none';">
-                            <div class="fallback-icon">🎪</div>
-                        </div>
-                        <div class="game-info">
-                            <div class="game-title">People Playground</div>
-                            <div class="game-description">Physics sandbox</div>
-                        </div>
-                    </div>
-                    <div class="game-card" onclick="openGame('slowroads')">
-                        <div class="game-image">
-                            <img src="https://assets.codepen.io/t-1/internal/avatars/teams/default.png?fit=crop&format=auto&height=256&version=1513105986&width=256" 
-                                 alt="Slowroads" 
-                                 onerror="this.parentElement.classList.add('no-image'); this.style.display='none';">
-                            <div class="fallback-icon">🚗</div>
-                        </div>
-                        <div class="game-info">
-                            <div class="game-title">Slowroads</div>
-                            <div class="game-description">Relaxing driving</div>
-                        </div>
-                    </div>
-                    <div class="game-card" onclick="openGame('subway-surfers')">
-                        <div class="game-image">
-                            <img src="https://i.ytimg.com/vi/0n1ie1Jsd50/maxresdefault.jpg" 
-                                 alt="Subway Surfers" 
-                                 onerror="this.parentElement.classList.add('no-image'); this.style.display='none';">
-                            <div class="fallback-icon">🚇</div>
-                        </div>
-                        <div class="game-info">
-                            <div class="game-title">Subway Surfers: New Orleans</div>
-                            <div class="game-description">Endless runner</div>
-                        </div>
-                    </div>
-                    <div class="game-card" onclick="openGame('man-in-window')">
-                        <div class="game-image">
-                            <img src="https://i.ytimg.com/vi/IFfjvtwyTeE/maxresdefault.jpg" 
-                                 alt="The Man In The Window" 
-                                 onerror="this.parentElement.classList.add('no-image'); this.style.display='none';">
-                            <div class="fallback-icon">🪟</div>
-                        </div>
-                        <div class="game-info">
-                            <div class="game-title">The Man In The Window</div>
-                            <div class="game-description">Mystery thriller</div>
-                        </div>
-                    </div>
-                    <div class="game-card" onclick="openGame('solar-smash')">
-                        <div class="game-image">
-                            <img src="https://play-lh.googleusercontent.com/9oKsgghjeohO1ztpmG6SrIMAVLn8sAhwsRGKHuOaqfMghYWiFHJ1osjwf_fAaMQZA5Y" 
-                                 alt="Solar Smash" 
-                                 onerror="this.parentElement.classList.add('no-image'); this.style.display='none';">
-                            <div class="fallback-icon">🌍</div>
-                        </div>
-                        <div class="game-info">
-                            <div class="game-title">Solar Smash</div>
-                            <div class="game-description">Planet destruction</div>
-                        </div>
-                    </div>
-                    <div class="game-card" onclick="openGame('crazy-cars')">
-                        <div class="game-image">
-                            <img src="https://color-tunnel.net/wp-content/uploads/sites/12/2023/12/WebsiteBannerCC.png" 
-                                 alt="Crazy Cars" 
-                                 onerror="this.parentElement.classList.add('no-image'); this.style.display='none';">
-                            <div class="fallback-icon">🏎️</div>
-                        </div>
-                        <div class="game-info">
-                            <div class="game-title">Crazy Cars</div>
-                            <div class="game-description">Racing madness</div>
-                        </div>
-                    </div>
-                    <div class="game-card" onclick="openGame('amanda-adventurer')">
-                        <div class="game-image">
-                            <img src="https://www.useapotion.com/wp-content/uploads/2023/05/amanda-review.jpg" 
-                                 alt="Amanda the Adventurer" 
-                                 onerror="this.parentElement.classList.add('no-image'); this.style.display='none';">
-                            <div class="fallback-icon">📺</div>
-                        </div>
-                        <div class="game-info">
-                            <div class="game-title">Amanda the Adventurer</div>
-                            <div class="game-description">Horror adventure</div>
-                        </div>
-                    </div>
-                    <div class="game-card" onclick="openGame('1v1-lol')">
-                        <div class="game-image">
-                            <img src="https://play-lh.googleusercontent.com/L7c_1nItMtx_u_9aQvc-Yrz8rNzSQgwmnHIrg5zvgSB3hxQRDRqzOsbw3GRKoQBpRAs" 
-                                 alt="1v1.LoL" 
-                                 onerror="this.parentElement.classList.add('no-image'); this.style.display='none';">
-                            <div class="fallback-icon">⚔️</div>
-                        </div>
-                        <div class="game-info">
-                            <div class="game-title">1v1.LoL</div>
-                            <div class="game-description">Battle royale</div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-        </main>
+    <!-- Intro Animation -->
+    <div class="intro-overlay" id="introOverlay">
+        <div class="stars-container" id="starsContainer"></div>
+        <div class="intro-content">
+            <div class="welcome-text" id="welcomeText">Welcome To Real Unblocker</div>
+        </div>
     </div>
 
-    <!-- Game Page -->
-    <div id="game-page" class="game-page">
-        <header class="game-header">
-            <div class="logo">
-                <h1>Real Unblocker</h1>
+    <!-- Main Website Content -->
+    <div class="main-website" id="mainWebsite">
+        <!-- Home Page -->
+        <div id="home-page">
+            <header class="header">
+                <div class="logo">
+                    <h1>Real Unblocker</h1>
+                    <div class="subtitle">Games By GnMath</div>
+                </div>
+                <div class="search-container">
+                    <input type="text" class="search-box" placeholder="Search games..." id="searchBox">
+                </div>
+                <div class="header-controls">
+                    <div class="dropdown">
+                        <select>
+                            <option>Name</option>
+                            <option>Date Added</option>
+                            <option>Popularity</option>
+                        </select>
+                    </div>
+                    <button class="settings-btn" onclick="toggleTheme()">🌙 Settings</button>
+                </div>
+            </header>
+
+            <main class="main-content">
+                <section class="section">
+                    <div class="section-header" onclick="toggleSection(this)">
+                        <span class="section-title">All Games</span>
+                        <span class="games-count">(24)</span>
+                    </div>
+                    <div class="games-grid" id="all-games">
+                        <!-- Original Games -->
+                        <div class="game-card" onclick="openGame('buckshot-roulette')">
+                            <div class="game-image">
+                                <img src="https://tse3.mm.bing.net/th/id/OIP.qUIzitN3yMQKsgG9vOk9wwHaHa?pid=Api&P=0&h=180" 
+                                     alt="Buckshot Roulette" 
+                                     onerror="this.parentElement.classList.add('no-image'); this.style.display='none';">
+                                <div class="fallback-icon">🎰</div>
+                            </div>
+                            <div class="game-info">
+                                <div class="game-title">Buckshot Roulette</div>
+                                <div class="game-description">Intense strategy game</div>
+                            </div>
+                        </div>
+                        <div class="game-card" onclick="openGame('chatbot-ai')">
+                            <div class="game-image">
+                                <img src="https://tse4.mm.bing.net/th/id/OIP.QfuBrrVrqpd--YpvS2QwwgAAAA?pid=Api&P=0&h=180" 
+                                     alt="Chat Bot AI" 
+                                     onerror="this.parentElement.classList.add('no-image'); this.style.display='none';">
+                                <div class="fallback-icon">🤖</div>
+                            </div>
+                            <div class="game-info">
+                                <div class="game-title">Chat Bot (A._.I)</div>
+                                <div class="game-description">AI conversation</div>
+                            </div>
+                        </div>
+                        <div class="game-card" onclick="openGame('repo')">
+                            <div class="game-image">
+                                <img src="https://assets-prd.ignimgs.com/2025/02/27/repo-button-1740672104138.jpg?crop=1%3A1" 
+                                     alt="R.E.P.O" 
+                                     onerror="this.parentElement.classList.add('no-image'); this.style.display='none';">
+                                <div class="fallback-icon">📁</div>
+                            </div>
+                            <div class="game-info">
+                                <div class="game-title">R.E.P.O</div>
+                                <div class="game-description">Mystery adventure</div>
+                            </div>
+                        </div>
+                        <div class="game-card" onclick="openGame('endoparasitic')">
+                            <div class="game-image">
+                                <img src="https://mediaproxy.tvtropes.org/width/1200/https://static.tvtropes.org/pmwiki/pub/images/endoparasitic_vertical.png" 
+                                     alt="Endoparasitic" 
+                                     onerror="this.parentElement.classList.add('no-image'); this.style.display='none';">
+                                <div class="fallback-icon">🦠</div>
+                            </div>
+                            <div class="game-info">
+                                <div class="game-title">Endoparasitic</div>
+                                <div class="game-description">Horror survival</div>
+                            </div>
+                        </div>
+                        <div class="game-card" onclick="openGame('thats-not-my-neighbor')">
+                            <div class="game-image">
+                                <img src="https://snowrider3d.io/wp-content/uploads/2024/03/Thats-Not-My-Neighbor.jpg" 
+                                     alt="That's Not My Neighbor" 
+                                     onerror="this.parentElement.classList.add('no-image'); this.style.display='none';">
+                                <div class="fallback-icon">👁️</div>
+                            </div>
+                            <div class="game-info">
+                                <div class="game-title">That's Not My Neighbor</div>
+                                <div class="game-description">Detective thriller</div>
+                            </div>
+                        </div>
+                        <div class="game-card" onclick="openGame('blade-ball')">
+                            <div class="game-image">
+                                <img src="https://www.gameskinny.com/wp-content/uploads/2023/10/Blade-Ball.jpg?w=1200" 
+                                     alt="Blade Ball" 
+                                     onerror="this.parentElement.classList.add('no-image'); this.style.display='none';">
+                                <div class="fallback-icon">⚽</div>
+                            </div>
+                            <div class="game-info">
+                                <div class="game-title">Blade Ball</div>
+                                <div class="game-description">Action sports</div>
+                            </div>
+                        </div>
+                        <div class="game-card" onclick="openGame('soundboard')">
+                            <div class="game-image">
+                                <img src="https://fs-prod-cdn.nintendo-europe.com/media/images/10_share_images/games_15/nintendo_switch_download_software_1/2x1_NSwitchDS_SoundboardButtonsWithInstantSounds_image1600w.jpg" 
+                                     alt="Soundboard" 
+                                     onerror="this.parentElement.classList.add('no-image'); this.style.display='none';">
+                                <div class="fallback-icon">🔊</div>
+                            </div>
+                            <div class="game-info">
+                                <div class="game-title">Soundboard</div>
+                                <div class="game-description">Sound effects fun</div>
+                            </div>
+                        </div>
+
+                        <!-- New Games Added -->
+                        <div class="game-card" onclick="openGame('raft')">
+                            <div class="game-image">
+                                <img src="https://cdn.akamai.steamstatic.com/steam/apps/648800/header.jpg" 
+                                     alt="Raft" 
+                                     onerror="this.parentElement.classList.add('no-image'); this.style.display='none';">
+                                <div class="fallback-icon">🛟</div>
+                            </div>
+                            <div class="game-info">
+                                <div class="game-title">Raft</div>
+                                <div class="game-description">Ocean survival adventure</div>
+                            </div>
+                        </div>
+                        <div class="game-card" onclick="openGame('vex5')">
+                            <div class="game-image">
+                                <img src="https://cdn.now.gg/apps-content/com.nowgg.h5.pub483.app51034/icon/vex-5.png" 
+                                     alt="Vex 5" 
+                                     onerror="this.parentElement.classList.add('no-image'); this.style.display='none';">
+                                <div class="fallback-icon">🏃</div>
+                            </div>
+                            <div class="game-info">
+                                <div class="game-title">Vex 3</div>
+                                <div class="game-description">Platform challenge</div>
+                            </div>
+                        </div>
+                        <div class="game-card" onclick="openGame('bitlife')">
+                            <div class="game-image">
+                                <img src="https://gamerjournalist.com/wp-content/uploads/2022/05/bitlife_logo.jpg?w=1200" 
+                                     alt="BitLife" 
+                                     onerror="this.parentElement.classList.add('no-image'); this.style.display='none';">
+                                <div class="fallback-icon">👤</div>
+                            </div>
+                            <div class="game-info">
+                                <div class="game-title">BitLife</div>
+                                <div class="game-description">Life simulation</div>
+                            </div>
+                        </div>
+                        <div class="game-card" onclick="openGame('bad-parenting')">
+                            <div class="game-image">
+                                <img src="https://img.itch.zone/aW1nLzE4MjEwNDQ5LnBuZw==/original/JNYuz2.png" 
+                                     alt="Bad Parenting" 
+                                     onerror="this.parentElement.classList.add('no-image'); this.style.display='none';">
+                                <div class="fallback-icon">👨‍👩‍👧‍👦</div>
+                            </div>
+                            <div class="game-info">
+                                <div class="game-title">Bad Parenting</div>
+                                <div class="game-description">Family simulation</div>
+                            </div>
+                        </div>
+                        <div class="game-card" onclick="openGame('elastic-man')">
+                            <div class="game-image">
+                                <img src="https://4.bp.blogspot.com/-QN_YD0A5_e0/WlBXadDDrwI/AAAAAAAEvXI/231sQj2vyUEOZOjFzKZt2xAdUjommLPSgCLcBGAs/s1600/elasticman.jpg" 
+                                     alt="Elastic Man" 
+                                     onerror="this.parentElement.classList.add('no-image'); this.style.display='none';">
+                                <div class="fallback-icon">🤸</div>
+                            </div>
+                            <div class="game-info">
+                                <div class="game-title">Elastic Man</div>
+                                <div class="game-description">Stretchy physics fun</div>
+                            </div>
+                        </div>
+                        <div class="game-card" onclick="openGame('five-nights-freddys')">
+                            <div class="game-image">
+                                <img src="https://cdn.akamai.steamstatic.com/steam/apps/319510/header.jpg" 
+                                     alt="Five Nights at Freddy's" 
+                                     onerror="this.parentElement.classList.add('no-image'); this.style.display='none';">
+                                <div class="fallback-icon">🐻</div>
+                            </div>
+                            <div class="game-info">
+                                <div class="game-title">Five Nights at Freddy's</div>
+                                <div class="game-description">Horror survival</div>
+                            </div>
+                        </div>
+                        <div class="game-card" onclick="openGame('friday-night-funkin')">
+                            <div class="game-image">
+                                <img src="https://tse4.mm.bing.net/th/id/OIP.d0qnyASIdGHNotpVt6LPEgHaHa?pid=Api&P=0&h=180" 
+                                     alt="Friday Night Funkin" 
+                                     onerror="this.parentElement.classList.add('no-image'); this.style.display='none';">
+                                <div class="fallback-icon">🎵</div>
+                            </div>
+                            <div class="game-info">
+                                <div class="game-title">Friday Night Funkin</div>
+                                <div class="game-description">Rhythm music game</div>
+                            </div>
+                        </div>
+                        <div class="game-card" onclick="openGame('people-playground')">
+                            <div class="game-image">
+                                <img src="https://cdn.akamai.steamstatic.com/steam/apps/1118200/header.jpg" 
+                                     alt="People Playground" 
+                                     onerror="this.parentElement.classList.add('no-image'); this.style.display='none';">
+                                <div class="fallback-icon">🎪</div>
+                            </div>
+                            <div class="game-info">
+                                <div class="game-title">People Playground</div>
+                                <div class="game-description">Physics sandbox</div>
+                            </div>
+                        </div>
+                        <div class="game-card" onclick="openGame('slowroads')">
+                            <div class="game-image">
+                                <img src="https://assets.codepen.io/t-1/internal/avatars/teams/default.png?fit=crop&format=auto&height=256&version=1513105986&width=256" 
+                                     alt="Slowroads" 
+                                     onerror="this.parentElement.classList.add('no-image'); this.style.display='none';">
+                                <div class="fallback-icon">🚗</div>
+                            </div>
+                            <div class="game-info">
+                                <div class="game-title">Slowroads</div>
+                                <div class="game-description">Relaxing driving</div>
+                            </div>
+                        </div>
+                        <div class="game-card" onclick="openGame('subway-surfers')">
+                            <div class="game-image">
+                                <img src="https://i.ytimg.com/vi/0n1ie1Jsd50/maxresdefault.jpg" 
+                                     alt="Subway Surfers" 
+                                     onerror="this.parentElement.classList.add('no-image'); this.style.display='none';">
+                                <div class="fallback-icon">🚇</div>
+                            </div>
+                            <div class="game-info">
+                                <div class="game-title">Subway Surfers: New Orleans</div>
+                                <div class="game-description">Endless runner</div>
+                            </div>
+                        </div>
+                        <div class="game-card" onclick="openGame('man-in-window')">
+                            <div class="game-image">
+                                <img src="https://i.ytimg.com/vi/IFfjvtwyTeE/maxresdefault.jpg" 
+                                     alt="The Man In The Window" 
+                                     onerror="this.parentElement.classList.add('no-image'); this.style.display='none';">
+                                <div class="fallback-icon">🪟</div>
+                            </div>
+                            <div class="game-info">
+                                <div class="game-title">The Man In The Window</div>
+                                <div class="game-description">Mystery thriller</div>
+                            </div>
+                        </div>
+                        <div class="game-card" onclick="openGame('solar-smash')">
+                            <div class="game-image">
+                                <img src="https://play-lh.googleusercontent.com/9oKsgghjeohO1ztpmG6SrIMAVLn8sAhwsRGKHuOaqfMghYWiFHJ1osjwf_fAaMQZA5Y" 
+                                     alt="Solar Smash" 
+                                     onerror="this.parentElement.classList.add('no-image'); this.style.display='none';">
+                                <div class="fallback-icon">🌍</div>
+                            </div>
+                            <div class="game-info">
+                                <div class="game-title">Solar Smash</div>
+                                <div class="game-description">Planet destruction</div>
+                            </div>
+                        </div>
+                        <div class="game-card" onclick="openGame('crazy-cars')">
+                            <div class="game-image">
+                                <img src="https://color-tunnel.net/wp-content/uploads/sites/12/2023/12/WebsiteBannerCC.png" 
+                                     alt="Crazy Cars" 
+                                     onerror="this.parentElement.classList.add('no-image'); this.style.display='none';">
+                                <div class="fallback-icon">🏎️</div>
+                            </div>
+                            <div class="game-info">
+                                <div class="game-title">Crazy Cars</div>
+                                <div class="game-description">Racing madness</div>
+                            </div>
+                        </div>
+                        <div class="game-card" onclick="openGame('amanda-adventurer')">
+                            <div class="game-image">
+                                <img src="https://www.useapotion.com/wp-content/uploads/2023/05/amanda-review.jpg" 
+                                     alt="Amanda the Adventurer" 
+                                     onerror="this.parentElement.classList.add('no-image'); this.style.display='none';">
+                                <div class="fallback-icon">📺</div>
+                            </div>
+                            <div class="game-info">
+                                <div class="game-title">Amanda the Adventurer</div>
+                                <div class="game-description">Horror adventure</div>
+                            </div>
+                        </div>
+                        <div class="game-card" onclick="openGame('1v1-lol')">
+                            <div class="game-image">
+                                <img src="https://play-lh.googleusercontent.com/L7c_1nItMtx_u_9aQvc-Yrz8rNzSQgwmnHIrg5zvgSB3hxQRDRqzOsbw3GRKoQBpRAs" 
+                                     alt="1v1.LoL" 
+                                     onerror="this.parentElement.classList.add('no-image'); this.style.display='none';">
+                                <div class="fallback-icon">⚔️</div>
+                            </div>
+                            <div class="game-info">
+                                <div class="game-title">1v1.LoL</div>
+                                <div class="game-description">Battle royale</div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </main>
+        </div>
+
+        <!-- Game Page -->
+        <div id="game-page" class="game-page">
+            <header class="game-header">
+                <div class="logo">
+                    <h1>Real Unblocker</h1>
+                </div>
+                <div class="game-controls">
+                    <button class="control-btn" onclick="goHome()">🏠 Home</button>
+                    <button class="control-btn" onclick="toggleFullscreen()">⛶ Fullscreen</button>
+                </div>
+            </header>
+            <div class="game-container">
+                <iframe id="game-frame" class="game-frame" src=""></iframe>
             </div>
-            <div class="game-controls">
-                <button class="control-btn" onclick="goHome()">🏠 Home</button>
-                <button class="control-btn" onclick="toggleFullscreen()">⛶ Fullscreen</button>
-            </div>
-        </header>
-        <div class="game-container">
-            <iframe id="game-frame" class="game-frame" src=""></iframe>
         </div>
     </div>
 
     <script>
         let currentGame = '';
-
-        // Theme management
         let isDarkMode = true;
 
+        // Intro Animation Controller
+        class IntroAnimation {
+            constructor() {
+                this.starsContainer = document.getElementById('starsContainer');
+                this.welcomeText = document.getElementById('welcomeText');
+                this.introOverlay = document.getElementById('introOverlay');
+                this.mainWebsite = document.getElementById('mainWebsite');
+                this.animationComplete = false;
+            }
+
+            createStar(x, y, size, delay) {
+                const star = document.createElement('div');
+                star.className = `star ${size}`;
+                star.style.left = x + '%';
+                star.style.top = y + '%';
+                star.style.animationDelay = delay + 's';
+                this.starsContainer.appendChild(star);
+            }
+
+            generateStars() {
+                // Create regular stars
+                const starCount = Math.min(50, Math.floor(window.innerWidth / 20));
+                for (let i = 0; i < starCount; i++) {
+                    const x = Math.random() * 100;
+                    const y = Math.random() * 100;
+                    const sizes = ['small', 'medium', 'large'];
+                    const size = sizes[Math.floor(Math.random() * sizes.length)];
+                    const delay = Math.random() * 2;
+                    this.createStar(x, y, size, delay);
+                }
+            }
+
+            startAnimation() {
+                this.generateStars();
+                
+                // Trigger welcome text animation
+                setTimeout(() => {
+                    this.welcomeText.classList.add('animate');
+                }, 500);
+
+                // Start fade out sequence
+                setTimeout(() => {
+                    this.fadeOut();
+                }, 4500);
+            }
+
+            fadeOut() {
+                this.introOverlay.classList.add('fade-out');
+                
+                setTimeout(() => {
+                    this.introOverlay.style.display = 'none';
+                    this.mainWebsite.classList.add('show');
+                    this.animationComplete = true;
+                }, 1000);
+            }
+        }
+
+        // Initialize intro animation when page loads
+        window.addEventListener('load', () => {
+            const intro = new IntroAnimation();
+            intro.startAnimation();
+        });
+
+        // Theme management
         function toggleTheme() {
             isDarkMode = !isDarkMode;
             const body = document.body;
@@ -727,7 +945,7 @@
                 'soundboard': 'games/soundboard.html',
                 // New games
                 'raft': 'games/raft.html',
-                'vex3': 'games/vex3.html',
+                'vex5': 'games/vex3.html',
                 'bitlife': 'games/bitlife.html',
                 'bad-parenting': 'games/bad-parenting.html',
                 'elastic-man': 'games/elastic-man.html',
@@ -776,8 +994,10 @@
         });
 
         // Prevent right-click context menu on game cards
-        document.querySelectorAll('.game-card').forEach(card => {
-            card.addEventListener('contextmenu', e => e.preventDefault());
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelectorAll('.game-card').forEach(card => {
+                card.addEventListener('contextmenu', e => e.preventDefault());
+            });
         });
     </script>
 </body>
