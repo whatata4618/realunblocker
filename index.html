@@ -224,6 +224,27 @@
             justify-content: center;
             font-size: 24px;
             position: relative;
+            overflow: hidden;
+        }
+
+        .game-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+
+        .game-card:hover .game-image img {
+            transform: scale(1.1);
+        }
+
+        .game-image .fallback-icon {
+            font-size: 24px;
+            display: none;
+        }
+
+        .game-image.no-image .fallback-icon {
+            display: block;
         }
 
         .game-info {
@@ -357,49 +378,84 @@
                 </div>
                 <div class="games-grid" id="all-games">
                     <div class="game-card" onclick="openGame('buckshot-roulette')">
-                        <div class="game-image">🎰</div>
+                        <div class="game-image">
+                            <img src="https://img.itch.zone/aW1hZ2UvMjc4NTkzOC8xNjU5MTMyLnBuZw==/315x250%23c/dWv8dz.png" 
+                                 alt="Buckshot Roulette" 
+                                 onerror="this.parentElement.classList.add('no-image'); this.style.display='none';">
+                            <div class="fallback-icon">🎰</div>
+                        </div>
                         <div class="game-info">
                             <div class="game-title">Buckshot Roulette</div>
                             <div class="game-description">Intense strategy game</div>
                         </div>
                     </div>
                     <div class="game-card" onclick="openGame('chatbot-ai')">
-                        <div class="game-image">🤖</div>
+                        <div class="game-image">
+                            <img src="https://images.unsplash.com/photo-1677442136019-21780ecad995?w=300&h=200&fit=crop&crop=center" 
+                                 alt="Chat Bot AI" 
+                                 onerror="this.parentElement.classList.add('no-image'); this.style.display='none';">
+                            <div class="fallback-icon">🤖</div>
+                        </div>
                         <div class="game-info">
                             <div class="game-title">Chat Bot (A._.I)</div>
                             <div class="game-description">AI conversation</div>
                         </div>
                     </div>
                     <div class="game-card" onclick="openGame('repo')">
-                        <div class="game-image">📁</div>
+                        <div class="game-image">
+                            <img src="https://images.unsplash.com/photo-1518709268805-4e9042af2176?w=300&h=200&fit=crop&crop=center" 
+                                 alt="R.E.P.O" 
+                                 onerror="this.parentElement.classList.add('no-image'); this.style.display='none';">
+                            <div class="fallback-icon">📁</div>
+                        </div>
                         <div class="game-info">
                             <div class="game-title">R.E.P.O</div>
                             <div class="game-description">Mystery adventure</div>
                         </div>
                     </div>
                     <div class="game-card" onclick="openGame('endoparasitic')">
-                        <div class="game-image">🦠</div>
+                        <div class="game-image">
+                            <img src="https://img.itch.zone/aW1hZ2UvMTc4MTI2Ni8xMDU0ODEzNi5wbmc=/315x250%23c/4YGI2C.png" 
+                                 alt="Endoparasitic" 
+                                 onerror="this.parentElement.classList.add('no-image'); this.style.display='none';">
+                            <div class="fallback-icon">🦠</div>
+                        </div>
                         <div class="game-info">
                             <div class="game-title">Endoparasitic</div>
                             <div class="game-description">Horror survival</div>
                         </div>
                     </div>
                     <div class="game-card" onclick="openGame('thats-not-my-neighbor')">
-                        <div class="game-image">👁️</div>
+                        <div class="game-image">
+                            <img src="https://img.itch.zone/aW1hZ2UvMjU3MzQ3Mi8xNTI3MDUzMS5wbmc=/315x250%23c/X4HoGJ.png" 
+                                 alt="That's Not My Neighbor" 
+                                 onerror="this.parentElement.classList.add('no-image'); this.style.display='none';">
+                            <div class="fallback-icon">👁️</div>
+                        </div>
                         <div class="game-info">
                             <div class="game-title">That's Not My Neighbor</div>
                             <div class="game-description">Detective thriller</div>
                         </div>
                     </div>
                     <div class="game-card" onclick="openGame('blade-ball')">
-                        <div class="game-image">⚽</div>
+                        <div class="game-image">
+                            <img src="https://images.rbxcdn.com/f449b171f5c00eb8e74f0ad5b8b8f9c8-512x512.png" 
+                                 alt="Blade Ball" 
+                                 onerror="this.parentElement.classList.add('no-image'); this.style.display='none';">
+                            <div class="fallback-icon">⚽</div>
+                        </div>
                         <div class="game-info">
                             <div class="game-title">Blade Ball</div>
                             <div class="game-description">Action sports</div>
                         </div>
                     </div>
                     <div class="game-card" onclick="openGame('soundboard')">
-                        <div class="game-image">🔊</div>
+                        <div class="game-image">
+                            <img src="https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=300&h=200&fit=crop&crop=center" 
+                                 alt="Soundboard" 
+                                 onerror="this.parentElement.classList.add('no-image'); this.style.display='none';">
+                            <div class="fallback-icon">🔊</div>
+                        </div>
                         <div class="game-info">
                             <div class="game-title">Soundboard</div>
                             <div class="game-description">Sound effects fun</div>
